@@ -1,0 +1,23 @@
+{
+  "name": "fullstackopen-part4",
+  "version": "1.0.0",
+  "description": "Solution for Full Stack Open Part 4",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Alan Varde",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.6.5"
+  }
+}

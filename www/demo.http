@@ -1,0 +1,25 @@
+GET http://localhost:3000/api/blogs HTTP/1.1
+
+###
+
+POST http://localhost:3000/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+    "title": "How I structure my REST APIs",
+    "author": "Lars Wächter",
+    "url": "https://dev.to/larswaechter/how-i-structure-my-rest-apis-11k4",
+    "likes": 58
+}
+
+###
+
+POST http://localhost:3000/api/blogs HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Always separate app and server files !",
+    "author": "nermineslimane",
+    "url": "https://dev.to/nermineslimane/always-separate-app-and-server-files--1nc7",
+    "likes": 7
+}
