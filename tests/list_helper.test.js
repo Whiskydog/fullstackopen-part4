@@ -104,3 +104,25 @@ describe('favorite blog', () => {
     expect(result).toEqual(favBlog);
   });
 });
+
+describe('author with most blogs', () => {
+  test('of empty list is undefined', () => {
+    const result = listHelper.mostBlogs([]);
+    expect(result).toBeUndefined();
+  });
+
+  test("when list has only one blog, equals that blog's author", () => {
+    const [blog] = listWithOneBlog;
+    const result = listHelper.mostBlogs(listWithOneBlog);
+    expect(result).toEqual({ author: blog.author, blogs: 1 });
+  });
+
+  test('of a bigger list is determined correctly', () => {
+    const authorWithMostBlogs = {
+      author: 'Robert C. Martin',
+      blogs: 3,
+    };
+    const result = listHelper.mostBlogs(blogs);
+    expect(result).toEqual(authorWithMostBlogs);
+  });
+});
