@@ -52,6 +52,22 @@ test('a blog can be created', async () => {
   expect(blogs).toContainEqual(response.body);
 });
 
+test('a request missing likes creates a blog with them set to zero', async () => {
+  const blog = {
+    title: 'Software Architecture Guide',
+    author: 'Martin Fowler',
+    url: 'https://martinfowler.com/architecture/',
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body.likes).toBe(0);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
