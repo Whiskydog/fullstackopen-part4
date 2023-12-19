@@ -32,6 +32,26 @@ test('blogs have an id property', async () => {
   blogs.forEach((blog) => expect(blog.id).toBeDefined());
 });
 
+test('a blog can be created', async () => {
+  const blog = {
+    title: 'Software Architecture Guide',
+    author: 'Martin Fowler',
+    url: 'https://martinfowler.com/architecture/',
+    likes: 100,
+  };
+
+  const response = await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogs = await helper.getBlogsInDatabase();
+
+  expect(blogs).toHaveLength(helper.initialBlogCount + 1);
+  expect(blogs).toContainEqual(response.body);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

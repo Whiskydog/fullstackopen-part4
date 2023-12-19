@@ -1,3 +1,5 @@
+const Blog = require('../models/blog');
+
 const initialBlogs = [
   {
     title: 'React patterns',
@@ -39,4 +41,8 @@ const initialBlogs = [
 
 const initialBlogCount = initialBlogs.length;
 
-module.exports = { initialBlogs, initialBlogCount };
+const getBlogsInDatabase = async () => {
+  return (await Blog.find({})).map((blog) => blog.toJSON());
+};
+
+module.exports = { getBlogsInDatabase, initialBlogs, initialBlogCount };
