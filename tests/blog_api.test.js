@@ -68,6 +68,30 @@ test('a request missing likes creates a blog with them set to zero', async () =>
   expect(response.body.likes).toBe(0);
 });
 
+test('a request to create a blog without a title fails', async () => {
+  const blog = {
+    author: 'Martin Fowler',
+    url: 'https://martinfowler.com/architecture/',
+    likes: 100,
+  };
+
+  const response = await api.post('/api/blogs').send(blog).expect(400);
+  expect(response.body.error).toBeDefined();
+  expect(response.body.error).toMatch(/Missing blog title/);
+});
+
+test('a request to create a blog without a url fails', async () => {
+  const blog = {
+    title: 'Software Architecture Guide',
+    author: 'Martin Fowler',
+    likes: 100,
+  };
+
+  const response = await api.post('/api/blogs').send(blog).expect(400);
+  expect(response.body.error).toBeDefined();
+  expect(response.body.error).toMatch(/Missing blog url/);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
