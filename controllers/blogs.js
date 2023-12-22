@@ -1,6 +1,12 @@
+const { expressjwt: jwt } = require('express-jwt');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+blogsRouter.post(
+  '/',
+  jwt({ secret: process.env.SECRET, algorithms: ['HS256'] })
+);
 
 blogsRouter.get('/', async (_request, response, next) => {
   try {
@@ -13,7 +19,7 @@ blogsRouter.get('/', async (_request, response, next) => {
 
 blogsRouter.post('/', async (request, response, next) => {
   try {
-    const user = await User.findOne();
+    const user = await User.findById(request.auth.id);
     const blog = new Blog({ ...request.body, user: user._id });
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
