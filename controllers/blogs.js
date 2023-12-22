@@ -1,12 +1,15 @@
-const { expressjwt: jwt } = require('express-jwt');
+const { expressjwt: jwt, UnauthorizedError } = require('express-jwt');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-blogsRouter.post(
-  '/',
-  jwt({ secret: process.env.SECRET, algorithms: ['HS256'] })
-);
+const jwtMiddleware = jwt({
+  secret: process.env.SECRET,
+  algorithms: ['HS256'],
+});
+
+blogsRouter.post('/', jwtMiddleware);
+blogsRouter.delete('/:id', jwtMiddleware);
 
 blogsRouter.get('/', async (_request, response, next) => {
   try {
@@ -32,9 +35,19 @@ blogsRouter.post('/', async (request, response, next) => {
 });
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  const { id } = request.params;
+  const blogId = request.params.id;
+  const tokenUserId = request.auth.id;
+
   try {
-    await Blog.findByIdAndDelete(id);
+    const blog = await Blog.findById(blogId, 'user');
+    if (!blog) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+    if (blog.user.toString() !== tokenUserId) {
+      return response.status(401).json({ error: 'Unauthorized deletion' });
+    }
+
+    await Blog.findByIdAndDelete(blogId);
     response.status(204).end();
   } catch (error) {
     next(error);
