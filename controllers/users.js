@@ -5,7 +5,10 @@ const usersRouter = require('express').Router();
 
 usersRouter.get('/', async (_request, response, next) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate(
+      'blogs',
+      'title author url likes'
+    );
     response.json(users);
   } catch (error) {
     next(error);
