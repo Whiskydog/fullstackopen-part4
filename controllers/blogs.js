@@ -1,4 +1,5 @@
-const { expressjwt: jwt, UnauthorizedError } = require('express-jwt');
+const { expressjwt: jwt } = require('express-jwt');
+const mongoose = require('mongoose');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -28,7 +29,9 @@ blogsRouter.post('/', async (request, response, next) => {
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
 
-    response.status(201).json(savedBlog);
+    response
+      .status(201)
+      .json(await savedBlog.populate('user', 'username name'));
   } catch (error) {
     next(error);
   }
@@ -56,12 +59,19 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
 blogsRouter.put('/:id', async (request, response, next) => {
   const { id } = request.params;
+  const update = {
+    ...request.body,
+    user: new mongoose.Types.ObjectId(request.body.user),
+  };
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(id, request.body, {
+    const updatedBlog = await Blog.findByIdAndUpdate(id, update, {
       new: true,
     });
-    if (updatedBlog) response.json(updatedBlog);
-    else response.status(404).end();
+    if (updatedBlog) {
+      response.json(await updatedBlog.populate('user', 'username name'));
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
     next(error);
   }
